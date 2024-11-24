@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application Result</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="apply_box">
+            <h1>Application Details</h1>
+            <div id="details"></div>
+            <div class="button_container">
+                <button onclick="window.location.href='index.html'">Back</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        window.onload = function () {
+            const data = JSON.parse(localStorage.getItem('applicationData'));
+
+            if (data) {
+                const detailsContainer = document.getElementById('details');
+                let detailsHtml = '';
+
+                for (const key in data) {
+                    if (key === 'upload') {
+                        detailsHtml += `<p><strong>Uploaded Image:</strong><br><img src="${data[key]}" alt="Uploaded Image" style="max-width: 200px; max-height: 200px;" /></p>`;
+                    } else if (key === 'contactNumber') {
+                        // Make contact number clickable to open dialer
+                        detailsHtml += `<p><strong>${key.replace(/_/g, ' ').toUpperCase()}:</strong> <a href="tel:${data[key]}">${data[key]}</a></p>`;
+                    } else if (key === 'address') {
+                        // Make address clickable to open Google Maps
+                        const encodedAddress = encodeURIComponent(data[key]);
+                        detailsHtml += `<p><strong>${key.replace(/_/g, ' ').toUpperCase()}:</strong> <a href="https://www.google.com/maps?q=${encodedAddress}" target="_blank">${data[key]}</a></p>`;
+                    } else if (key === 'email') {
+                        // Make email clickable to open mail client
+                        detailsHtml += `<p><strong>${key.replace(/_/g, ' ').toUpperCase()}:</strong> <a href="mailto:${data[key]}">${data[key]}</a></p>`;
+                    } else {
+                        detailsHtml += `<p><strong>${key.replace(/_/g, ' ').toUpperCase()}:</strong> ${data[key]}</p>`;
+                    }
+                }
+
+                detailsContainer.innerHTML = detailsHtml;
+            } else {
+                document.getElementById('details').innerHTML = 'No data found.';
+            }
+        };
+    </script>
+</body>
+</html>
